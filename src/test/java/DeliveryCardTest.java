@@ -7,9 +7,17 @@ import com.codeborne.selenide.Condition;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Keys;
 import java.time.Duration;
+import java.time.format.DateTimeFormatter;
+import java.time.LocalDate;
+
 
 
 class DeliveryCardTest {
+
+    public String generateDate (int days) {
+        return LocalDate.now().plusDays(days).format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+    }
+    String planningDate = generateDate(4);
 
     @Test
     void shouldDeliveryCArd() {
@@ -19,12 +27,12 @@ class DeliveryCardTest {
         $x("//input[@placeholder='Дата встречи']").click();
         $x("//input[@placeholder='Дата встречи']").doubleClick();
         $x("//input[@placeholder='Дата встречи']").sendKeys(Keys.DELETE);
-        $x("//input[@placeholder='Дата встречи']").val("22.04.2022");
+        $x("//input[@placeholder='Дата встречи']").val(generateDate(4));
         $x("//input[@name='name']").val("Ленин Владимир");
         $x("//input[@name='phone']").val("+79180000001");
         $x("//*[@class='checkbox__box']").click();
         $(withText("Забронировать")).click();
         $x("//*[contains(text(),'Успешно!')]").should(Condition.appear, Duration.ofSeconds(15));
+        $(".notification__content").shouldHave(Condition.text("Встреча успешно забронирована на " + planningDate), Duration.ofSeconds(15));
     }
-
 }
